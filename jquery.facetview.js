@@ -291,6 +291,21 @@ resultwrap_end
 ----------------
 HTML values in which to wrap each result object
 
+resultwrap_replace_text
+-------------------
+If set to true, facetview will replace all strings which look like this:
+FACETVIEW_REPLACE_START <field name> FACETVIEW_REPLACE_END
+with the value of the field referred to by the field name.
+This replacement happens in resultwrap_start and resultwrap_end options.
+It allows you to use the value of a field in custom HTML being passed in
+to wrap every result.
+
+(So you can create a link like "Read more..." which links to a page with
+ a more detailed representation of the result. You can get to the
+ contents of the "id" or "title" or another relevant field of your
+ results, allowing for the automatic generation of links to individual
+ results.)
+
 result_box_colours
 ------------------
 A list of background colours that will be randomly assigned to each result object that has the "result_box" 
@@ -425,6 +440,7 @@ search box - the end user will not know they are happening.
             "searchwrap_end":"</table>",
             "resultwrap_start":"<tr><td>",
             "resultwrap_end":"</td></tr>",
+            "resultwrap_replace_text": false,
             "result_box_colours":[],
             "fadein":800,
             "post_search_callback": false,
@@ -772,8 +788,21 @@ search box - the end user will not know they are happening.
 
         // given a result record, build how it should look on the page
         var buildrecord = function(index) {
+            var resultwrap_regex = /FACETVIEW_REPLACE_START (.+) FACETVIEW_REPLACE_END/g;
+
             var record = options.data['records'][index];
-            var result = options.resultwrap_start;
+
+            var resultwrap_start = decodeURIComponent(options.resultwrap_start);
+            if (options.resultwrap_replace_text) {
+                // extract field name that needs replacing and do it
+                resultwrap_start = resultwrap_start.replace(resultwrap_regex, 
+                                    function(match, field_name) {
+                                        return record[field_name];
+                                    }
+                                 );
+            }
+            var result = resultwrap_start;
+
             // add first image where available
             if (options.display_images) {
                 var recstr = JSON.stringify(record);
@@ -830,7 +859,17 @@ search box - the end user will not know they are happening.
                 }
             }
             lines ? result += lines : result += JSON.stringify(record,"","    ");
-            result += options.resultwrap_end;
+
+            var resultwrap_end = decodeURIComponent(options.resultwrap_end);
+            if (options.resultwrap_replace_text) {
+                // extract field name that needs replacing and do it
+                resultwrap_end = resultwrap_end.replace(resultwrap_regex, 
+                                    function(match, field_name) {
+                                        return record[field_name];
+                                    }
+                                 );
+            }
+            result += resultwrap_end;
             return result;
         };
 
