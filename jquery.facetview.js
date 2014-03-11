@@ -927,7 +927,7 @@ search box - the end user will not know they are happening.
             if ( options.pager_slider ) {
                 var metaTmpl = '<div style="font-size:20px;font-weight:bold;margin:5px 0 10px 0;padding:5px 0 5px 0;border:1px solid #eee;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;"> \
                     <a alt="previous" title="previous" class="facetview_decrement" style="color:#333;float:left;padding:0 40px 20px 20px;" href="{{from}}">&lt;</a> \
-                    <span style="margin:28%;">{{from}} &ndash; {{to}} of {{total}}</span> \
+                    <span style="margin:25%;">{{from}} &ndash; {{to}} of {{total}}</span> \
                     <a alt="next" title="next" class="facetview_increment" style="color:#333;float:right;padding:0 20px 20px 40px;" href="{{to}}">&gt;</a> \
                 </div>';
             } else {
